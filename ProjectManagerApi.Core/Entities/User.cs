@@ -1,5 +1,4 @@
-﻿// ProjectManagerApi.Core/Entities/User.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ProjectManagerApi.Core.Entities
@@ -9,9 +8,8 @@ namespace ProjectManagerApi.Core.Entities
         public Guid Id { get; private set; }
         public string Name { get; private set; }
         public string Email { get; private set; }
-        public string PasswordHash { get; private set; } // Store hashed password
+        public string PasswordHash { get; private set; }
 
-        // Private constructor for EF Core and other internal uses
         private User() { }
 
         public User(string name, string email, string passwordHash)
@@ -29,7 +27,6 @@ namespace ProjectManagerApi.Core.Entities
             PasswordHash = passwordHash;
         }
 
-        // Methods to update properties (e.g., ChangeName, UpdatePasswordHash)
         public void UpdateName(string newName)
         {
             if (string.IsNullOrWhiteSpace(newName))

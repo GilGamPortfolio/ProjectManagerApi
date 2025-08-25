@@ -1,5 +1,4 @@
-﻿// ProjectManagerApi.Core/Entities/Project.cs
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ProjectManagerApi.Core.Entities
@@ -9,9 +8,8 @@ namespace ProjectManagerApi.Core.Entities
         public Guid Id { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
-        public Guid OwnerId { get; private set; } // The ID of the User who owns this project
+        public Guid OwnerId { get; private set; }
 
-        // Private constructor for EF Core and other internal uses
         private Project() { }
 
         public Project(string name, string description, Guid ownerId)
@@ -27,7 +25,6 @@ namespace ProjectManagerApi.Core.Entities
             OwnerId = ownerId;
         }
 
-        // Methods to update properties
         public void UpdateName(string newName)
         {
             if (string.IsNullOrWhiteSpace(newName))
@@ -37,7 +34,6 @@ namespace ProjectManagerApi.Core.Entities
 
         public void UpdateDescription(string newDescription)
         {
-            // Description can be empty or null if desired by business rules, so no strict validation here
             Description = newDescription;
         }
 
