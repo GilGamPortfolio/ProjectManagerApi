@@ -14,6 +14,10 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+# Visual Studio
+.vs/
+.idea/
+
 # .NET Core
 project.lock.json
 project.fragment.lock.json
@@ -27,10 +31,17 @@ ScaffoldingReadMe.txt
 # NuGet Symbol Packages
 *.snupkg
 
+# Packages
+packages/
+*.suo
+*.user
+*.log
+
 # Others
 ~$*
 *~
 CodeCoverage/
+*.txt
 
 # MSBuild Binary and Structured Log
 *.binlog
@@ -44,5 +55,4 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 
-# Others
-*.txt
+
