@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using ProjectManagerApi.Infrastructure;
 using ProjectManagerApi.Infrastructure.Repositories;
-using ProjectManagerApi.Application.Interfaces; 
+using ProjectManagerApi.Application.Interfaces;
+using ProjectManagerApi.Application.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 var app = builder.Build();
 
