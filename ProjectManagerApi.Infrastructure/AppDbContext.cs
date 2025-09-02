@@ -1,67 +1,77 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProjectManagerApi.Core.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity; // Certifique-se de ter este using
 
 namespace ProjectManagerApi.Infrastructure
 {
-    public class AppDbContext : DbContext
+    // AQUI: 'User' é a sua entidade User personalizada, que agora herda de IdentityUser<Guid>.
+    // 'IdentityRole<Guid>' indica que os IDs dos papéis também serão Guid.
+    // 'Guid' é o tipo da chave primária para usuários e papéis.
+    public class AppDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid> // <--- CORREÇÃO AQUI (se não for ApplicationUser)
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        public DbSet<User> Users { get; set; }
+        // REMOVIDO: DbSet<User> Users { get; set; }
+        // O IdentityDbContext já gerencia o DbSet para a sua entidade 'User' (agora IdentityUser).
+
         public DbSet<Project> Projects { get; set; }
         public DbSet<TaskItem> TaskItems { get; set; }
         public DbSet<Comment> Comments { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // CRÍTICO: Chamar o base.OnModelCreating(modelBuilder) ANTES das suas configurações.
+            // Isso garante que as tabelas do Identity (AspNetUsers, AspNetRoles, etc.) sejam criadas corretamente.
             base.OnModelCreating(modelBuilder);
 
-            // Relação TaskItem -> Project (um TaskItem pertence a um Project)
-            // Se um Project for deletado, os TaskItems associados a ele devem ser deletados em cascata.
-            modelBuilder.Entity<TaskItem>()
-                .HasOne<Project>()
-                .WithMany()
-                .HasForeignKey(t => t.ProjectId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade); // Manter Cascade aqui (TaskItem morre com o Project)
+            // **********************************************
+            // AJUSTES: Configurações de Relacionamento
+            // **********************************************
 
-            // Relação Comment -> TaskItem (um Comment pertence a um TaskItem)
-            // Se um TaskItem for deletado, os Comments associados a ele devem ser deletados em cascata.
-            modelBuilder.Entity<Comment>()
-                .HasOne<TaskItem>()
-                .WithMany()
-                .HasForeignKey(c => c.TaskItemId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade); // Manter Cascade aqui (Comment morre com o TaskItem)
-
-            // Relação Project -> User (um Project tem um Owner - User)
-            // *** ESTA É A MUDANÇA CRÍTICA PARA RESOLVER O ERRO MAIS RECENTE ***
-            // DEVE SER DeleteBehavior.Restrict para evitar o ciclo de cascata com TaskItem.AssigneeId.
-            // Isso significa que você NÃO poderá deletar um User se ele ainda for o owner de Projects.
+            // Configuração da relação Project -> User (Owner)
+            // Agora a propriedade Owner (Type User) em Project se refere à sua entidade User que é IdentityUser<Guid>
             modelBuilder.Entity<Project>()
-                .HasOne<User>()
-                .WithMany()
+                .HasOne(p => p.Owner)
+                .WithMany(u => u.Projects)
                 .HasForeignKey(p => p.OwnerId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict); // <--- MUDANÇA AQUI: DE CASCADE PARA RESTRICT
+                .OnDelete(DeleteBehavior.Restrict);
 
-            // Relação TaskItem -> User (um TaskItem pode ser atribuído a um Assignee - User)
-            // Manter SetNull, pois o conflito principal é resolvido acima.
+            // Configuração da relação TaskItem -> Project
             modelBuilder.Entity<TaskItem>()
-                .HasOne<User>()
-                .WithMany()
-                .HasForeignKey(t => t.AssigneeId)
-                .IsRequired(false) // Permite AssigneeId ser NULL
-                .OnDelete(DeleteBehavior.SetNull); // Manter SetNull aqui
+                .HasOne(t => t.Project)
+                .WithMany(p => p.TaskItems)
+                .HasForeignKey(t => t.ProjectId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // Relação Comment -> User (um Comment foi feito por um User)
-            // Manter Restrict, pois resolveu um problema anterior e é uma boa prática aqui.
+            // Configuração da relação TaskItem -> User (Assignee)
+            // Novamente, Assignee (Type User) se refere à sua entidade User que é IdentityUser<Guid>
+            modelBuilder.Entity<TaskItem>()
+                .HasOne(t => t.Assignee)
+                .WithMany(u => u.AssignedTasks) // Esta coleção deve existir na sua entidade User
+                .HasForeignKey(t => t.AssigneeId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            // Configuração da relação Comment -> TaskItem
             modelBuilder.Entity<Comment>()
-                .HasOne<User>()
-                .WithMany()
+                .HasOne(c => c.TaskItem)
+                .WithMany(t => t.Comments)
+                .HasForeignKey(c => c.TaskItemId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Configuração da relação Comment -> User (Author)
+            // O User aqui se refere à sua entidade User que é IdentityUser<Guid>
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.User)
+                .WithMany(u => u.Comments) // Esta coleção deve existir na sua entidade User
                 .HasForeignKey(c => c.UserId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict); // Manter Restrict aqui
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

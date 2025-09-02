@@ -8,9 +8,24 @@ namespace ProjectManagerApi.Core.Entities
         public Guid Id { get; private set; }
         public string Name { get; private set; }
         public string Description { get; private set; }
-        public Guid OwnerId { get; private set; }
+        public Guid OwnerId { get; private set; } // Chave estrangeira para o proprietário do projeto
 
-        private Project() { }
+        // **********************************************
+        // NOVO: Propriedades de Navegação
+        // **********************************************
+        // Propriedade de navegação para o proprietário do projeto (User)
+        public User Owner { get; private set; }
+
+        // Coleção de navegação para as tarefas associadas ao projeto (TaskItem)
+        public ICollection<TaskItem> TaskItems { get; private set; } = new List<TaskItem>();
+
+        // Coleção de navegação para os membros do projeto (Users) - se você tiver essa relação many-to-many
+        // Para uma relação many-to-many, você pode precisar de uma tabela de junção explícita
+        // ou o EF Core pode inferir, dependendo da sua configuração e como User.cs gerencia isso.
+        // public ICollection<User> Members { get; private set; } = new List<User>();
+
+
+        private Project() { } // Construtor privado para o EF Core
 
         public Project(string name, string description, Guid ownerId)
         {

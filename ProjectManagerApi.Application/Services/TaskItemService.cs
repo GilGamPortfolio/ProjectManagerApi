@@ -3,10 +3,7 @@ using ProjectManagerApi.Application.DTOs;
 using ProjectManagerApi.Application.Interfaces; // Para ITaskItemRepository
 using ProjectManagerApi.Application.Services.Interfaces; // Para ITaskItemService
 using ProjectManagerApi.Core.Entities;
-using ProjectManagerApi.Core.Enums; // Para o enum TaskStatus
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using ProjectManagerApi.Core.Enums;
 
 namespace ProjectManagerApi.Application.Services
 {
@@ -34,7 +31,8 @@ namespace ProjectManagerApi.Application.Services
                 taskItemDto.Title,
                 taskItemDto.Description,
                 taskItemDto.ProjectId,
-                taskItemDto.AssigneeId
+                taskItemDto.AssigneeId,
+                Priority.Medium
             );
 
             await _taskItemRepository.AddAsync(taskItem);

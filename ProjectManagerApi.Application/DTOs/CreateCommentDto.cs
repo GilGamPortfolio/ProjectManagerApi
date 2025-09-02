@@ -9,10 +9,10 @@ namespace ProjectManagerApi.Application.DTOs
         [StringLength(1000, MinimumLength = 1, ErrorMessage = "Comment content must be between {2} and {1} characters.")]
         public string Content { get; set; }
 
-        [Required(ErrorMessage = "Task Item ID is required.")]
+        [Required(ErrorMessage = "TaskItemId is required.")]
         public Guid TaskItemId { get; set; }
 
-        [Required(ErrorMessage = "User ID is required.")]
+        [Required(ErrorMessage = "UserId is required.")]
         public Guid UserId { get; set; }
     }
 }
