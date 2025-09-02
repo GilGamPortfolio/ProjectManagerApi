@@ -1,5 +1,4 @@
-﻿// ProjectManagerApi.Application/DTOs/Auth/RegisterModel.cs
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ProjectManagerApi.Application.DTOs.Auth
 {

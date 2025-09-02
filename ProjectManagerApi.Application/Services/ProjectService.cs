@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
 using ProjectManagerApi.Application.DTOs;
-using ProjectManagerApi.Application.Interfaces; // Para IProjectRepository
-using ProjectManagerApi.Application.Services.Interfaces; // Para IProjectService
+using ProjectManagerApi.Application.Interfaces;
+using ProjectManagerApi.Application.Services.Interfaces;
 using ProjectManagerApi.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ProjectManagerApi.Application.Services
 {
@@ -14,7 +11,6 @@ namespace ProjectManagerApi.Application.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IMapper _mapper;
 
-        // Injeção de dependência do repositório e do mapper
         public ProjectService(IProjectRepository projectRepository, IMapper mapper)
         {
             _projectRepository = projectRepository;
@@ -23,9 +19,7 @@ namespace ProjectManagerApi.Application.Services
 
         public async Task<ProjectResponseDto> CreateProjectAsync(CreateProjectDto projectDto)
         {
-            // Mapeia o DTO para a entidade, utilizando o construtor da entidade Project.
-            // Certifique-se de que o AutoMapper está configurado para CreateMap<CreateProjectDto, Project>()
-            // e que o construtor da entidade Project pode receber os parâmetros mapeados.
+
             var project = new Project(projectDto.Name, projectDto.Description, projectDto.OwnerId);
 
             await _projectRepository.AddAsync(project);
@@ -40,7 +34,6 @@ namespace ProjectManagerApi.Application.Services
 
         public async Task<IEnumerable<ProjectResponseDto>> GetAllProjectsAsync()
         {
-            // Este método depende de IProjectRepository.cs ter um método GetAllAsync()
             var projects = await _projectRepository.GetAllAsync();
             return _mapper.Map<IEnumerable<ProjectResponseDto>>(projects);
         }
@@ -50,10 +43,9 @@ namespace ProjectManagerApi.Application.Services
             var existingProject = await _projectRepository.GetByIdAsync(id);
             if (existingProject == null)
             {
-                return null; // Projeto não encontrado
+                return null; 
             }
 
-            // Atualiza as propriedades da entidade Project usando seus métodos internos.
             if (projectDto.Name != null)
             {
                 existingProject.UpdateName(projectDto.Name);
@@ -64,11 +56,9 @@ namespace ProjectManagerApi.Application.Services
                 existingProject.UpdateDescription(projectDto.Description);
             }
 
-            // TODO: Validar se OwnerId existe como um usuário válido, se necessário.
-            // Isso pode envolver injetar um IUserRepository ou IUserService aqui.
-            if (projectDto.OwnerId != Guid.Empty && projectDto.OwnerId != null) // Verifica se o OwnerId foi fornecido no DTO
+            if (projectDto.OwnerId != Guid.Empty && projectDto.OwnerId != null) 
             {
-                existingProject.UpdateOwner(projectDto.OwnerId.Value); // Usa .Value pois OwnerId é Guid? no DTO
+                existingProject.UpdateOwner(projectDto.OwnerId.Value); 
             }
 
             await _projectRepository.UpdateAsync(existingProject);
@@ -80,7 +70,7 @@ namespace ProjectManagerApi.Application.Services
             var project = await _projectRepository.GetByIdAsync(id);
             if (project == null)
             {
-                return false; // Projeto não encontrado
+                return false; 
             }
             await _projectRepository.DeleteAsync(project);
             return true;

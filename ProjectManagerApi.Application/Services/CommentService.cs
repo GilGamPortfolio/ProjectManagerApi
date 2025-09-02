@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ProjectManagerApi.Application.DTOs;
-using ProjectManagerApi.Application.Interfaces; // Para ICommentRepository
-using ProjectManagerApi.Application.Services.Interfaces; // Para ICommentService
+using ProjectManagerApi.Application.Interfaces;
+using ProjectManagerApi.Application.Services.Interfaces;
 using ProjectManagerApi.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,10 +13,7 @@ namespace ProjectManagerApi.Application.Services
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IMapper _mapper;
-        // Opcional: private readonly ITaskItemService _taskItemService; // Para validar TaskItemId
-        // Opcional: private readonly IUserService _userService;         // Para validar UserId
 
-        // Injeção de dependência do repositório e do mapper
         public CommentService(ICommentRepository commentRepository, IMapper mapper)
         {
             _commentRepository = commentRepository;
@@ -25,10 +22,6 @@ namespace ProjectManagerApi.Application.Services
 
         public async Task<CommentResponseDto> CreateCommentAsync(CreateCommentDto commentDto)
         {
-            // TODO: Adicionar validação de negócio:
-            // - Verificar se TaskItemId existe (opcional, mas recomendado para integridade referencial)
-            // - Verificar se UserId existe (opcional, mas recomendado)
-
             var comment = new Comment(
                 commentDto.Content,
                 commentDto.TaskItemId,
@@ -56,10 +49,9 @@ namespace ProjectManagerApi.Application.Services
             var existingComment = await _commentRepository.GetByIdAsync(id);
             if (existingComment == null)
             {
-                return null; // Comentário não encontrado
+                return null;
             }
 
-            // Atualiza o conteúdo do comentário usando o método interno da entidade.
             if (commentDto.Content != null)
             {
                 existingComment.UpdateContent(commentDto.Content);
@@ -74,7 +66,7 @@ namespace ProjectManagerApi.Application.Services
             var comment = await _commentRepository.GetByIdAsync(id);
             if (comment == null)
             {
-                return false; // Comentário não encontrado
+                return false; 
             }
             await _commentRepository.DeleteAsync(comment);
             return true;

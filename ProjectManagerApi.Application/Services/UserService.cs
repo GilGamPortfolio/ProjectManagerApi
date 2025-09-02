@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
-using Microsoft.EntityFrameworkCore; // <-- ADICIONE ESTA LINHA AQUI!
+using Microsoft.EntityFrameworkCore;
 
 namespace ProjectManagerApi.Application.Services
 {
@@ -53,7 +53,6 @@ namespace ProjectManagerApi.Application.Services
 
         public async Task<IEnumerable<UserResponseDto>> GetAllUsersAsync()
         {
-            // Agora ToListAsync() deve ser reconhecido
             var users = await _userManager.Users.ToListAsync();
             return _mapper.Map<IEnumerable<UserResponseDto>>(users);
         }

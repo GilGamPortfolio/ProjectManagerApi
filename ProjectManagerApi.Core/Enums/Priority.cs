@@ -1,5 +1,4 @@
-﻿// ProjectManagerApi.Core/Enums/Priority.cs
-namespace ProjectManagerApi.Core.Enums
+﻿namespace ProjectManagerApi.Core.Enums
 {
     public enum Priority
     {

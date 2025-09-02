@@ -1,8 +1,6 @@
-﻿// No arquivo TaskItem.cs
-
-using System;
+﻿using System;
 using ProjectManagerApi.Core.Enums;
-using System.Collections.Generic; // Certifique-se de que este using está presente para ICollection e List
+using System.Collections.Generic;
 
 namespace ProjectManagerApi.Core.Entities
 {
@@ -12,21 +10,18 @@ namespace ProjectManagerApi.Core.Entities
         public string Title { get; private set; }
         public string Description { get; private set; }
         public Enums.TaskStatus Status { get; private set; }
-        public Enums.Priority Priority { get; private set; } // Esta propriedade está presente, não está faltando.
+        public Enums.Priority Priority { get; private set; }
 
-        // Chaves Estrangeiras
         public Guid ProjectId { get; private set; }
         public Guid? AssigneeId { get; private set; }
 
-        // Propriedades de Navegação
         public Project Project { get; private set; }
         public User Assignee { get; private set; }
         public ICollection<Comment> Comments { get; private set; } = new List<Comment>();
 
 
-        private TaskItem() { } // Construtor privado para o EF Core
+        private TaskItem() { } 
 
-        // CONSTRUTOR CORRIGIDO
         public TaskItem(string title, string description, Guid projectId, Guid? assigneeId, Enums.Priority priority)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -37,13 +32,12 @@ namespace ProjectManagerApi.Core.Entities
             Id = Guid.NewGuid();
             Title = title;
             Description = description;
-            Status = Enums.TaskStatus.ToDo; // Estado inicial padrão
+            Status = Enums.TaskStatus.ToDo;
             Priority = priority;
             ProjectId = projectId;
             AssigneeId = assigneeId;
         }
 
-        // MÉTODOS DE ATUALIZAÇÃO (mantidos como estão)
         public void UpdateTitle(string newTitle)
         {
             if (string.IsNullOrWhiteSpace(newTitle))
