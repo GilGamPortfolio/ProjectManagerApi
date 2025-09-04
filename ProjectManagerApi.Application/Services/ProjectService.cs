@@ -29,7 +29,16 @@ namespace ProjectManagerApi.Application.Services
         public async Task<ProjectResponseDto?> GetProjectByIdAsync(Guid id)
         {
             var project = await _projectRepository.GetByIdAsync(id);
+
+            if (project == null) return null;
+
             return _mapper.Map<ProjectResponseDto>(project);
+        }
+
+        public async Task<IEnumerable<ProjectResponseDto>> GetProjectsByOwnerIdAsync(Guid ownerId)
+        {
+            var projects = await _projectRepository.GetProjectsByOwnerIdAsync(ownerId);
+            return _mapper.Map<IEnumerable<ProjectResponseDto>>(projects);
         }
 
         public async Task<IEnumerable<ProjectResponseDto>> GetAllProjectsAsync()

@@ -25,7 +25,7 @@ namespace ProjectManagerApi.Core.Entities
 
             Id = Guid.NewGuid();
             Name = name;
-            Description = description;
+            Description = description ?? string.Empty;
             OwnerId = ownerId;
         }
 
@@ -38,7 +38,7 @@ namespace ProjectManagerApi.Core.Entities
 
         public void UpdateDescription(string newDescription)
         {
-            Description = newDescription;
+            Description = newDescription ?? string.Empty;
         }
 
         public void UpdateOwner(Guid newOwnerId)

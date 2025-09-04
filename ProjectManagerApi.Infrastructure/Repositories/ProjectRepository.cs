@@ -43,5 +43,11 @@ namespace ProjectManagerApi.Infrastructure.Repositories
             _context.Projects.Remove(project);
             await _context.SaveChangesAsync();
         }
+        public async Task<IEnumerable<Project>> GetProjectsByOwnerIdAsync(Guid ownerId)
+        {
+            return await _context.Projects
+                                 .Where(p => p.OwnerId == ownerId)
+                                 .ToListAsync();
+        }
     }
 }

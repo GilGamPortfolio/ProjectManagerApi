@@ -12,5 +12,7 @@ namespace ProjectManagerApi.Application.Interfaces
         Task AddAsync(Project project);
         Task UpdateAsync(Project project);
         Task DeleteAsync(Project project);
+        Task<IEnumerable<Project>> GetProjectsByOwnerIdAsync(Guid ownerId);
+
     }
 }

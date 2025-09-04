@@ -41,5 +41,12 @@ namespace ProjectManagerApi.Application.Services.Interfaces
         /// <param name="id">The ID of the project to delete.</param>
         /// <returns>True if the project was successfully deleted, false otherwise.</returns>
         Task<bool> DeleteProjectAsync(Guid id);
+
+        /// <summary>
+        /// Retrieves an enumerable collection of projects associated with a specific owner asynchronously.
+        /// </summary>
+        /// <param name="ownerId">The unique identifier of the owner whose projects are to be retrieved.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="IEnumerable{T}"/> of <see cref="ProjectResponseDto"/> objects.</returns>
+        Task<IEnumerable<ProjectResponseDto>> GetProjectsByOwnerIdAsync(Guid ownerId);
     }
 }
